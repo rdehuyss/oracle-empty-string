@@ -18,6 +18,9 @@ public class MyJob {
         // Log a message when a new percentage is reached.
         if(lastLoggedPercent.compareAndSet(percentComplete - 1, percentComplete)) {
             LOGGER.info("Progress: {}% completed ({} of {} jobs).", percentComplete, index, totalAmountOfJobs);
+            if (percentComplete == 100) {
+                System.exit(0);
+            }
         }
     }
 }

@@ -43,7 +43,6 @@ public class Main {
 
         JobRunr.getBackgroundJobServer().start();
         Thread.currentThread().join();
-
     }
 
 

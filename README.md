@@ -1,4 +1,5 @@
 ## Oracle DB
+### `select ... for update skip locked` returns empty CLOB values
 
 This repo is a reproducer where Oracle under load return an empty CLOB when using `select for update skip locked`. Removing `for update skip locked` solves the issue (replace JobRunr version `7.4.0` in pom by `6.3.5`).
 This is reproducible on a Apple M3 Max and a bare-metal [Hetzner EX44](https://www.hetzner.com/dedicated-rootserver/ex44) 
