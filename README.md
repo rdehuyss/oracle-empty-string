@@ -5,9 +5,10 @@ This repo is a reproducer where Oracle under load return an empty CLOB when usin
 This is reproducible on a Apple M3 Max and a bare-metal [Hetzner EX44](https://www.hetzner.com/dedicated-rootserver/ex44) 
 
 The empty value is retrieved as follows:
-- in JobTable (line 211): `resultSet.asString("jobAsJson")`;
-- in SqlResultSet (line 33) : `return autobox(val(name), String.class)`;
-- in ReflectionUtils (line 280): `return Autoboxer.autobox(value, type)`;
+- in [JobTable (line 211)](https://github.com/jobrunr/jobrunr/blob/master/core/src/main/java/org/jobrunr/storage/sql/common/JobTable.java#L211): `resultSet.asString("jobAsJson")`
+- in [SqlResultSet (line 33)](https://github.com/jobrunr/jobrunr/blob/master/core/src/main/java/org/jobrunr/storage/sql/common/db/SqlResultSet.java#L33): `return autobox(val(name), String.class)`
+- in [ReflectionUtils (line 280)](https://github.com/jobrunr/jobrunr/blob/master/core/src/main/java/org/jobrunr/utils/reflection/ReflectionUtils.java#L280): `return Autoboxer.autobox(value, type)`
+- in [Autoboxer (line 37)](https://github.com/jobrunr/jobrunr/blob/master/core/src/main/java/org/jobrunr/utils/reflection/autobox/Autoboxer.java#L37): `autoboxer.autobox(value, type)`
 - in [StringTypeAutoboxer](https://github.com/jobrunr/jobrunr/blob/master/core/src/main/java/org/jobrunr/utils/reflection/autobox/StringTypeAutoboxer.java) (line 22): `clob.getSubString(1, (int) clob.length())`
 
 See the attached stacktrace where Jackson complains about an empty string.
