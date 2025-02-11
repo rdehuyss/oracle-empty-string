@@ -7,7 +7,7 @@ import org.jobrunr.scheduling.BackgroundJob;
 import org.jobrunr.storage.sql.common.SqlStorageProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.OracleContainer;
+import org.testcontainers.oracle.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import javax.sql.DataSource;
@@ -22,9 +22,7 @@ public class Main {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    private static final OracleContainer oracleContainer = new OracleContainer(DockerImageName
-            .parse("gvenzl/oracle-free:latest-faststart")
-            .asCompatibleSubstituteFor("gvenzl/oracle-xe"))
+    private static final OracleContainer oracleContainer = new OracleContainer("gvenzl/oracle-free:latest-faststart")
             .withStartupTimeoutSeconds(900)
             .withConnectTimeoutSeconds(500)
             .withEnv("DB_SID", "ORCL")
