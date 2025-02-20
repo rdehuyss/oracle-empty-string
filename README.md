@@ -1,7 +1,18 @@
 ## Oracle DB
 ### `select ... for update skip locked` returns empty CLOB values
 
-This repo is a reproducer where Oracle under load return an empty CLOB when using `select for update skip locked`. Removing `for update skip locked` solves the issue (replace JobRunr version `7.4.0` in pom by `6.3.5`).
+> tldr; this repo shows an issue with Oracle where a CLOB value is returning an empty string although there is actual content
+
+
+### Readme.md contents
+- Overview - What is going on? 
+- How to reproduce it locally
+- JobRunr: how to change column types and test again
+- Actual SQL query causing the issue
+- Known facts
+
+### Overview - What is going on?
+This repo is a reproducer where Oracle under load return an empty CLOB when using `select for update skip locked`. Removing `for update skip locked` solves the issue (replace JobRunr version `7.4.0` in pom by `6.3.5`) or changing from `CLOB` to `VARCHAR2(4000)`.
 This is reproducible on a Apple M3 Max and a bare-metal [Hetzner EX44](https://www.hetzner.com/dedicated-rootserver/ex44) 
 
 The empty value is retrieved as follows:
@@ -32,3 +43,30 @@ Caused by: com.fasterxml.jackson.databind.exc.MismatchedInputException: No conte
 	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3860)
 	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3828)
 ```
+
+### How to reproduce it locally?
+- Clone the project locally
+- Open in Intellij or your preferred IDE
+- Navigate to the Main class and run the main method
+- The reproducer will automatically:
+  - create the DB schema
+  - insert all data (100k rows)
+  - and reproduce the issue (typically around 50k rows or about 2 minutes)
+
+
+### JobRunr - how to change column types and test again
+- Navigate to [v001__create_job_table.sql](https://github.com/jobrunr/jobrunr/blob/master/core/src/main/resources/org/jobrunr/storage/sql/oracle/migrations/v001__create_job_table.sql#L5)
+- Change `CLOB` to another column type (tested with `VARCHAR2(4000)` and `CLOB`)
+- In the root of the project, run the command `./gradlew publishToMavenLocal`
+- Change the JobRunr version in the `pom.xml` to `1.0.0-SNAPSHOT`
+- Reload the maven dependencies
+- Run the `main` method of the `Main` class again
+
+### SQL Query
+
+```sql
+select jobAsJson from jobrunr_jobs where ROWNUM <= 256 and state = 'ENQUEUED' ORDER BY updatedAt ASC FOR UPDATE SKIP LOCKED
+```
+### Known facts
+- the issue does not happen __without__ `FOR UPDATE SKIP LOCKED` and `CLOB` column type
+- the issue does not happen __with__ `FOR UPDATE SKIP LOCKED` and `VARCHAR2(4000)` column type (which is often too small for failing jobs)
