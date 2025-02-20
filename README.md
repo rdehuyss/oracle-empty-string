@@ -5,11 +5,11 @@
 
 
 ### Readme.md contents
-- Overview - What is going on? 
-- How to reproduce it locally
-- JobRunr: how to change column types and test again
-- Actual SQL query causing the issue
-- Known facts
+- [Overview - What is going on?](https://github.com/rdehuyss/oracle-empty-string#overview---what-is-going-on) 
+- [How to reproduce it locally](https://github.com/rdehuyss/oracle-empty-string?tab=readme-ov-file#how-to-reproduce-it-locally)
+- [JobRunr: how to change column types and test again](https://github.com/rdehuyss/oracle-empty-string?tab=readme-ov-file#jobrunr---how-to-change-column-types-and-test-again)
+- [Actual SQL query causing the issue](https://github.com/rdehuyss/oracle-empty-string?tab=readme-ov-file#sql-query)
+- [Known facts](https://github.com/rdehuyss/oracle-empty-string?tab=readme-ov-file#sql-query)
 
 ### Overview - What is going on?
 This repo is a reproducer where Oracle under load return an empty CLOB when using `select for update skip locked`. Removing `for update skip locked` solves the issue (replace JobRunr version `7.4.0` in pom by `6.3.5`) or changing from `CLOB` to `VARCHAR2(4000)`.
