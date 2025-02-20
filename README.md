@@ -12,7 +12,7 @@
 - [Known facts](https://github.com/rdehuyss/oracle-empty-string?tab=readme-ov-file#sql-query)
 
 ### Overview - What is going on?
-This repo is a reproducer where Oracle under load return an empty CLOB when using `select for update skip locked`. Removing `for update skip locked` solves the issue (replace JobRunr version `7.4.0` in pom by `6.3.5`) or changing from `CLOB` to `VARCHAR2(4000)`.
+This repo is a reproducer where Oracle under load return an empty CLOB when using `select for update skip locked`. Removing `for update skip locked` (replace JobRunr version `7.4.0` in pom by `6.3.5`) or changing from `CLOB` to `VARCHAR2(4000)` solves the issue.
 This is reproducible on a Apple M3 Max and a bare-metal [Hetzner EX44](https://www.hetzner.com/dedicated-rootserver/ex44) 
 
 The empty value is retrieved as follows:
